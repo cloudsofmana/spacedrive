@@ -103,7 +103,7 @@ impl VolumeWatcher {
 		{
 			use inotify::{Inotify, WatchMask};
 
-			let inotify = Inotify::init().map_err(|e| {
+			let mut inotify = Inotify::init().map_err(|e| {
 				VolumeError::Platform(format!("Failed to initialize inotify: {}", e))
 			})?;
 
@@ -111,7 +111,7 @@ impl VolumeWatcher {
 			for path in ["/dev", "/media", "/mnt", "/run/media"] {
 				if let Err(e) = inotify.add_watch(
 					path,
-					WatchMask::CREATE | WatchMask::DELETE | WatchMask::MODIFY | WatchMask::UNMOUNT,
+					WatchMask::CREATE | WatchMask::DELETE | WatchMask::MODIFY,
 				) {
 					warn!("Failed to watch path {}: {}", path, e);
 				}
